@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.watchhive.dto.request.UserRequestDto;
 import com.watchhive.dto.response.UserResponseDto;
-import com.watchhive.entity.User;
-import com.watchhive.mapper.UserMapper;
 import com.watchhive.response.ApiResponse;
+import com.watchhive.service.interfaces.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,23 +21,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController
 {
-	private final UserMapper userMapper;
+	private final UserService userService;
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<UserResponseDto>> register(
 			@RequestBody UserRequestDto requestDto)
 	{
-		User user = User.builder()
-				.username(requestDto.getUsername())
-				.email(requestDto.getEmail())
-				.password(requestDto.getPassword())
-				.bio(requestDto.getBio())
-				.profilePicture(requestDto.getProfilePicture())
-				.enabled(true)
-				.role("USER")
-				.build();
-
-		UserResponseDto responseDto = userMapper.toResponse(user);
+		UserResponseDto responseDto = userService.registerUser(requestDto);
 
 		ApiResponse<UserResponseDto> response = ApiResponse.<UserResponseDto>builder()
 				.success(true)
@@ -53,17 +42,8 @@ public class UserController
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@PathVariable Long id)
 	{
-		User user = User.builder()
-				.username("john_doe")
-				.email("john@example.com")
-				.password("secret123")
-				.profilePicture("avatar.png")
-				.bio("avid movie watcher")
-				.role("USER")
-				.enabled(true)
-				.build();
 
-		UserResponseDto responseDto = userMapper.toResponse(user);
+		UserResponseDto responseDto = userService.getUserById(id);
 
 		ApiResponse<UserResponseDto> response = ApiResponse.<UserResponseDto>builder()
 				.success(true)
