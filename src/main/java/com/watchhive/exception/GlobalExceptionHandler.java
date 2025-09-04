@@ -1,5 +1,6 @@
 package com.watchhive.exception;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -11,27 +12,27 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.watchhive.response.ApiResponse;
+import com.watchhive.response.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler
 {
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<ApiResponse<Object>> handleUserNotFound(
-			UserNotFoundException ex)
+	public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex)
 	{
-		ApiResponse<Object> response = ApiResponse.builder()
+		ErrorResponse response = ErrorResponse.builder()
 				.success(false)
 				.message(ex.getMessage())
-				.data(null)
+				.errors(null)
 				.status(HttpStatus.NOT_FOUND.value())
+				.timestamp(LocalDateTime.now())
 				.build();
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ApiResponse<Object>> handleValidationErrors(
+	public ResponseEntity<ErrorResponse> handleValidationErrors(
 			MethodArgumentNotValidException ex)
 	{
 		// Collect all field errors into a map
@@ -43,11 +44,12 @@ public class GlobalExceptionHandler
 						(existing, replacement) -> existing // merge function handles duplicate keys
 				));
 
-		ApiResponse<Object> response = ApiResponse.builder()
+		ErrorResponse response = ErrorResponse.builder()
 				.success(false)
 				.message("Validation failed")
-				.data(errors)
+				.errors(errors)
 				.status(HttpStatus.BAD_REQUEST.value())
+				.timestamp(LocalDateTime.now())
 				.build();
 
 		return ResponseEntity.badRequest().body(response);
