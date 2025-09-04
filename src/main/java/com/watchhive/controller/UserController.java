@@ -14,6 +14,7 @@ import com.watchhive.dto.response.UserResponseDto;
 import com.watchhive.response.ApiResponse;
 import com.watchhive.service.interfaces.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,7 +26,7 @@ public class UserController
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<UserResponseDto>> register(
-			@RequestBody UserRequestDto requestDto)
+			@Valid @RequestBody UserRequestDto requestDto)
 	{
 		UserResponseDto responseDto = userService.registerUser(requestDto);
 
