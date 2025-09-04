@@ -24,6 +24,7 @@ public class UserController
 {
 	private final UserService userService;
 
+	// register a user
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<UserResponseDto>> register(
 			@Valid @RequestBody UserRequestDto requestDto)
@@ -40,6 +41,7 @@ public class UserController
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	// find user by id
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@PathVariable Long id)
 	{

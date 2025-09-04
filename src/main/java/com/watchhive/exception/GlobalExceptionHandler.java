@@ -17,18 +17,18 @@ import com.watchhive.response.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler
 {
-	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex)
+	@ExceptionHandler(AppException.class)
+	public ResponseEntity<ErrorResponse> handleAppException(AppException ex)
 	{
 		ErrorResponse response = ErrorResponse.builder()
 				.success(false)
 				.message(ex.getMessage())
 				.errors(null)
-				.status(HttpStatus.NOT_FOUND.value())
+				.status(ex.getStatus())
 				.timestamp(LocalDateTime.now())
 				.build();
 
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		return ResponseEntity.status(ex.getStatus()).body(response);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

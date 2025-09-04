@@ -19,3 +19,6 @@ BODY:
   "email": "bad-email",
   "password": "123"
 }
+
+# find user by id
+GET http://localhost:8080/api/users/4
